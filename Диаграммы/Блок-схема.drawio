@@ -1,0 +1,87 @@
+<mxfile host="app.diagrams.net" modified="2024-05-15T16:20:26.597Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="HpBQ8o5QmnltYG7fY9A9" version="24.4.0" type="device">
+  <diagram name="Страница — 1" id="dJ2RGDc316PWSBuT6vaZ">
+    <mxGraphModel dx="1434" dy="772" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="RQ07NBas5DSbm-WBCmH9-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="131" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-1" value="Начало" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="RQ07NBas5DSbm-WBCmH9-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="191" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="RQ07NBas5DSbm-WBCmH9-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="381" y="282" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-3" value="Поиск книг по названию, автору, жанру и т.д." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="222" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="RQ07NBas5DSbm-WBCmH9-5" target="RQ07NBas5DSbm-WBCmH9-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-5" value="Результаты поиска" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="311" y="308" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="RQ07NBas5DSbm-WBCmH9-7" target="RQ07NBas5DSbm-WBCmH9-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-27" value="Нет" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="RQ07NBas5DSbm-WBCmH9-22">
+          <mxGeometry x="-0.0286" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="RQ07NBas5DSbm-WBCmH9-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="258" y="438" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-28" value="Да" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="RQ07NBas5DSbm-WBCmH9-23">
+          <mxGeometry x="-0.2059" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-7" value="Есть совпадения?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="326" y="393" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-8" value="Вывести сообщение об отсутствии совпадений" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="496" y="408" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="RQ07NBas5DSbm-WBCmH9-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="188" y="468" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="RQ07NBas5DSbm-WBCmH9-10" target="RQ07NBas5DSbm-WBCmH9-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-10" value="Выбор книги" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="128" y="499" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-12" value="Конец" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="128" y="670" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="RQ07NBas5DSbm-WBCmH9-16" target="RQ07NBas5DSbm-WBCmH9-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-16" value="Отображение детальной информации о книге" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="103" y="584.5" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-30" value="Ввод поискового запроса" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="315" y="130" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="RQ07NBas5DSbm-WBCmH9-31" value="Показать список книг с краткой информацией" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="108" y="408" width="160" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
