@@ -1,0 +1,73 @@
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    registration_date DATE NOT NULL
+);
+
+CREATE TABLE Authors (
+    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    biography TEXT
+);
+
+CREATE TABLE Genres (
+    genre_id INT AUTO_INCREMENT PRIMARY KEY,
+    genre_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Books (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    publication_year YEAR,
+    genre_id INT,
+    author_id INT,
+    FOREIGN KEY (genre_id) REFERENCES Genres(genre_id),
+    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
+);
+
+CREATE TABLE Loans (
+    loan_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    book_id INT,
+    loan_date DATE NOT NULL,
+    return_date DATE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (book_id) REFERENCES Books(book_id)
+);
+
+INSERT INTO Users (username, password, email, registration_date) VALUES
+('ivan_ivanov', 'пароль123', 'ivan@example.com', '2024-01-01'),
+('anna_petrovna', 'пароль456', 'anna@example.com', '2024-02-01'),
+('petr_sidorov', 'пароль789', 'petr@example.com', '2024-03-01'),
+('olga_kuznetsova', 'пароль101', 'olga@example.com', '2024-04-01'),
+('sergey_smirnov', 'пароль102', 'sergey@example.com', '2024-05-01');
+
+INSERT INTO Authors (name, biography) VALUES
+('Александр Пушкин', 'Русский поэт, драматург и прозаик.'),
+('Лев Толстой', 'Русский писатель, один из величайших писателей мира.'),
+('Фёдор Достоевский', 'Русский писатель, мыслитель, философ и публицист.'),
+('Антон Чехов', 'Русский писатель, драматург и врач.'),
+('Николай Гоголь', 'Русский прозаик, драматург, поэт, критик.');
+
+INSERT INTO Genres (genre_name) VALUES
+('Научная фантастика'),
+('Фэнтези'),
+('Детектив'),
+('Историческая проза'),
+('Роман');
+
+INSERT INTO Books (title, publication_year, genre_id, author_id) VALUES
+('Евгений Онегин', 1833, 1, 1),
+('Война и мир', 1869, 4, 2),
+('Преступление и наказание', 1866, 3, 3),
+('Вишнёвый сад', 1904, 5, 4),
+('Мёртвые души', 1842, 2, 5);
+
+INSERT INTO Loans (user_id, book_id, loan_date, return_date) VALUES
+(1, 1, '2024-05-01', '2024-05-15'),
+(2, 2, '2024-05-02', '2024-05-16'),
+(3, 3, '2024-05-03', '2024-05-17'),
+(4, 4, '2024-05-04', '2024-05-18'),
+(5, 5, '2024-05-05', '2024-05-19');
