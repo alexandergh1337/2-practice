@@ -18,8 +18,10 @@
     <?php
     session_start();
     if (isset($_SESSION['username'])): ?>
-        <p>Привет, <?= htmlspecialchars($_SESSION['username']); ?>!</p>
-        <a href="logout.php" class="bg-blue-600 text-white px-4 py-2 rounded">Выйти</a>
+        <div class="welcome-section">
+            <p>Привет, <?= htmlspecialchars($_SESSION['username']); ?>!</p>
+            <a href="logout.php" class="bg-blue-600 text-white px-4 py-2 rounded">Выйти</a>
+        </div>
         <div id="book-list" class="my-8"></div>
         <div id="book-content" class="my-8"></div>
     <?php else: ?>

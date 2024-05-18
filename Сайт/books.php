@@ -30,6 +30,7 @@ $result = $conn->query($sql);
             <th class="px-4 py-2">Автор</th>
             <th class="px-4 py-2">Жанр</th>
             <th class="px-4 py-2">Год издания</th>
+            <th class="px-4 py-2">Описание</th>
         </tr>
         </thead>
         <tbody>
@@ -38,14 +39,15 @@ $result = $conn->query($sql);
             while($row = $result->fetch_assoc()) {
                 echo "<tr>
                                 <td class='border px-4 py-2'>{$row['book_id']}</td>
-                                <td class='border px-4 py-2'>{$row['title']}</td>
+                                <td class='border px-4 py-2'><a href='view_book.php?book_id={$row['book_id']}' class='text-blue-600 hover:underline'>{$row['title']}</a></td>
                                 <td class='border px-4 py-2'>{$row['author_name']}</td>
                                 <td class='border px-4 py-2'>{$row['genre_name']}</td>
                                 <td class='border px-4 py-2'>{$row['publication_year']}</td>
+                                <td class='border px-4 py-2'>{$row['description']}</td>
                               </tr>";
             }
         } else {
-            echo "<tr><td colspan='5' class='text-center py-4'>Нет доступных книг</td></tr>";
+            echo "<tr><td colspan='6' class='text-center py-4'>Нет доступных книг</td></tr>";
         }
         ?>
         </tbody>

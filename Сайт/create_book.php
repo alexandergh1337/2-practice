@@ -8,18 +8,25 @@ $title = $data['title'];
 $author_id = $data['author_id'];
 $genre_id = $data['genre_id'];
 $publication_year = $data['publication_year'];
+$description = $data['description'];
+$pages = $data['pages'];
 
-// Используем подготовленные выражения для предотвращения SQL-инъекций
-$sql = "INSERT INTO Books (title, author_id, genre_id, publication_year) VALUES (?, ?, ?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("siii", $title, $author_id, $genre_id, $publication_year);
+$sql = "INSERT INTO Books (title, author_id, genre_id, publication_year, description) VALUES ('$title', '$author_id', '$genre_id', '$publication_year', '$description')";
 
-if ($stmt->execute()) {
-    echo json_encode(["message" => "Книга добавлена", "book_id" => $conn->insert_id]);
+if ($conn->query($sql) === TRUE) {
+    $book_id = $conn->insert_id;
+    foreach ($pages as $page_number => $content) {
+        $sql = "INSERT INTO BookPages (book_id, page_number, content) VALUES ('$book_id', '$page_number', '$content')";
+        if ($conn->query($sql) !== TRUE) {
+            echo json_encode(["message" => "Ошибка: " . $sql . "<br>" . $conn->error]);
+            $conn->close();
+            exit;
+        }
+    }
+    echo json_encode(["message" => "Книга добавлена", "book_id" => $book_id]);
 } else {
-    echo json_encode(["message" => "Ошибка: " . $stmt->error]);
+    echo json_encode(["message" => "Ошибка: " . $sql . "<br>" . $conn->error]);
 }
 
-$stmt->close();
 $conn->close();
 ?>
