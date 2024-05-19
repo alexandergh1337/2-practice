@@ -1,12 +1,23 @@
 <?php
 include 'config.php';
 
-$sql = "SELECT Books.book_id, Books.title, Books.publication_year, Authors.name as author_name, Genres.genre_name
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 10; // Number of books per page
+$offset = ($page - 1) * $limit;
+
+// Get total number of books
+$sql = "SELECT COUNT(*) as total FROM Books";
+$total_result = $conn->query($sql);
+$total_books = $total_result->fetch_assoc()['total'];
+$total_pages = ceil($total_books / $limit);
+
+// Fetch limited books for the current page
+$sql = "SELECT Books.book_id, Books.title, Books.publication_year, Authors.name as author_name, Genres.genre_name, Books.description
         FROM Books
         JOIN Authors ON Books.author_id = Authors.author_id
-        JOIN Genres ON Books.genre_id = Genres.genre_id";
+        JOIN Genres ON Books.genre_id = Genres.genre_id
+        LIMIT $limit OFFSET $offset";
 $result = $conn->query($sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -52,6 +63,13 @@ $result = $conn->query($sql);
         ?>
         </tbody>
     </table>
+
+    <!-- Pagination Links -->
+    <div class="mt-4">
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?= $i ?>" class="bg-blue-600 text-white px-4 py-2 rounded"><?= $i ?></a>
+        <?php endfor; ?>
+    </div>
 </main>
 <footer class="bg-blue-600 p-4 text-white text-center">
     &copy; 2024 Онлайн Библиотека

@@ -23,11 +23,12 @@ CREATE TABLE Genres (
 CREATE TABLE Books (
                        book_id INT AUTO_INCREMENT PRIMARY KEY,
                        title VARCHAR(255) NOT NULL,
-                       publication_year YEAR,
-                       genre_id INT,
                        author_id INT,
-                       FOREIGN KEY (genre_id) REFERENCES Genres(genre_id),
-                       FOREIGN KEY (author_id) REFERENCES Authors(author_id)
+                       genre_id INT,
+                       publication_year INT,
+                       description TEXT,
+                       FOREIGN KEY (author_id) REFERENCES Authors(author_id),
+                       FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
 );
 
 CREATE TABLE BookPages (
