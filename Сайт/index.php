@@ -1,9 +1,32 @@
+<?php
+// Подключение к базе данных
+$pdo = new PDO('mysql:host=localhost;dbname=OnlineLibrary', 'root', '');
+
+// Запрос всех книг
+$stmt = $pdo->query("SELECT * FROM Books");
+$books = $stmt->fetchAll();
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Онлайн Библиотека</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/book.png" type="image/png">
@@ -22,8 +45,8 @@
             <p>Привет, <?= htmlspecialchars($_SESSION['username']); ?>!</p>
             <a href="logout.php" class="bg-blue-600 text-white px-4 py-2 rounded">Выйти</a>
         </div>
-        <div id="book-list" class="my-8"></div>
-        <div id="book-content" class="my-8"></div>
+<!--        <div id="book-list" class="my-8"></div>-->
+<!--        <div id="book-content" class="my-8"></div>-->
     <?php else: ?>
         <!-- Форма регистрации -->
         <section class="my-8">
@@ -61,6 +84,41 @@
             </form>
         </section>
     <?php endif; ?>
+
+    <h1>Список книг</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Год публикации</th>
+            <th>Жанр</th>
+            <th>Описание</th>
+            <th>Действие</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($books as $book): ?>
+            <tr>
+                <td><?php echo htmlspecialchars($book['title']); ?></td>
+                <td><?php echo htmlspecialchars($book['author']); ?></td>
+                <td><?php echo htmlspecialchars($book['publication_year']); ?></td>
+                <td><?php
+                    if (!is_null($book['genre_id'])) {
+                        $genreStmt = $pdo->prepare("SELECT genre_name FROM Genres WHERE genre_id = ?");
+                        $genreStmt->execute([$book['genre_id']]);
+                        $genre = $genreStmt->fetch();
+                        echo htmlspecialchars($genre['genre_name']);
+                    } else {
+                        echo 'N/A';
+                    }
+                    ?></td>
+                <td><?php echo htmlspecialchars($book['description']); ?></td>
+                <td><a href="books.php?id=<?php echo $book['book_id']; ?>" class="bg-blue-600 text-white px-4 py-2 rounded">Читать</a></td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
 </main>
 <footer class="bg-blue-600 p-4 text-white text-center">
     &copy; 2024 Онлайн Библиотека

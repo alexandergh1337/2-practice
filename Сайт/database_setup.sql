@@ -11,9 +11,9 @@ CREATE TABLE Users (
 
 CREATE TABLE Authors (
                          author_id INT AUTO_INCREMENT PRIMARY KEY,
-                         name VARCHAR(100) NOT NULL,
-                         biography TEXT
+                         name VARCHAR(255) NOT NULL
 );
+
 
 CREATE TABLE Genres (
                         genre_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -23,6 +23,8 @@ CREATE TABLE Genres (
 CREATE TABLE Books (
                        book_id INT AUTO_INCREMENT PRIMARY KEY,
                        title VARCHAR(255) NOT NULL,
+                       author VARCHAR(255) NOT NULL,
+                       path VARCHAR(255) NOT NULL,
                        author_id INT,
                        genre_id INT,
                        publication_year INT,

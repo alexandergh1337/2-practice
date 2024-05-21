@@ -3,7 +3,7 @@
 function readEpub($filePath) {
     $zip = new ZipArchive;
     if ($zip->open($filePath) === TRUE) {
-        $content = $zip->getFromName('content.opf'); // путь к файлу метаданных
+        $content = $zip->getFromName('content.opf');
         $xml = new SimpleXMLElement($content);
 
         $namespaces = $xml->getNamespaces(true);
@@ -15,9 +15,8 @@ function readEpub($filePath) {
         $description = isset($metadata->description) ? (string) $metadata->description : 'Описание отсутствует';
 
         $genre = 'Неизвестный жанр';
-        $publication_year = '2024';
+        $publication_year = date('Y');
 
-        // Поиск жанра и года публикации
         foreach ($metadata as $meta) {
             $metaName = $meta->getName();
             if ($metaName === 'subject') {
@@ -27,7 +26,6 @@ function readEpub($filePath) {
             }
         }
 
-        // Получение страниц книги и стилей
         $pages = [];
         $styles = '';
         foreach ($manifest->item as $item) {
@@ -57,23 +55,5 @@ function readEpub($filePath) {
     } else {
         return false;
     }
-}
-
-$book = readEpub('books/*.epub');
-
-if ($book) {
-    echo "Title: {$book['title']}<br>";
-    echo "Author: {$book['author']}<br>";
-    echo "Description: {$book['description']}<br>";
-    echo "Genre: {$book['genre']}<br>";
-    echo "Publication Year: {$book['publication_year']}<br>";
-
-    echo "<style>{$book['styles']}</style>";
-
-    foreach ($book['pages'] as $page) {
-        echo "<div class='page'>{$page}</div>";
-    }
-} else {
-    echo "Failed to read EPUB file.";
 }
 ?>

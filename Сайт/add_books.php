@@ -40,9 +40,10 @@ function addBookToDatabase($bookData) {
     $title = $conn->real_escape_string($bookData['title']);
     $publication_year = $conn->real_escape_string($bookData['publication_year']);
     $description = $conn->real_escape_string($bookData['description']);
+    $path = $conn->real_escape_string($bookData['path']);
 
-    $sql = "INSERT INTO Books (title, author_id, genre_id, publication_year, description) 
-            VALUES ('$title', '$author_id', '$genre_id', '$publication_year', '$description')";
+    $sql = "INSERT INTO Books (title, author_id, genre_id, publication_year, description, path) 
+            VALUES ('$title', '$author_id', '$genre_id', '$publication_year', '$description', '$path')";
     if ($conn->query($sql) === TRUE) {
         $book_id = $conn->insert_id;
 
