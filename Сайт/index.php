@@ -1,10 +1,18 @@
 <?php
-// Подключение к базе данных
-$pdo = new PDO('mysql:host=localhost;dbname=OnlineLibrary', 'root', '');
+session_start();
+include 'config.php';
 
-// Запрос всех книг
-$stmt = $pdo->query("SELECT * FROM Books");
-$books = $stmt->fetchAll();
+$sql = "SELECT Books.book_id, Books.title, Books.publication_year, Authors.name AS author, Genres.genre_name, Books.description
+        FROM Books
+        JOIN Authors ON Books.author_id = Authors.author_id
+        JOIN Genres ON Books.genre_id = Genres.genre_id";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$books = $result->fetch_all(MYSQLI_ASSOC);
+
+$stmt->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -38,17 +46,39 @@ $books = $stmt->fetchAll();
 <main class="p-4">
     <h2 class="text-2xl font-bold">Добро пожаловать в нашу библиотеку!</h2>
 
-    <?php
-    session_start();
-    if (isset($_SESSION['username'])): ?>
+    <?php if (isset($_SESSION['username'])): ?>
         <div class="welcome-section">
             <p>Привет, <?= htmlspecialchars($_SESSION['username']); ?>!</p>
             <a href="logout.php" class="bg-blue-600 text-white px-4 py-2 rounded">Выйти</a>
         </div>
-<!--        <div id="book-list" class="my-8"></div>-->
-<!--        <div id="book-content" class="my-8"></div>-->
+
+        <h1 class="mt-8">Список книг</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Год публикации</th>
+                <th>Жанр</th>
+                <th>Описание</th>
+                <th>Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($books as $book): ?>
+                <tr>
+                    <td><?= htmlspecialchars($book['title']); ?></td>
+                    <td><?= htmlspecialchars($book['author']); ?></td>
+                    <td><?= htmlspecialchars($book['publication_year']); ?></td>
+                    <td><?= htmlspecialchars($book['genre_name']); ?></td>
+                    <td><?= htmlspecialchars($book['description']); ?></td>
+                    <td><a href="books.php?id=<?= $book['book_id']; ?>" class="bg-blue-600 text-white px-4 py-2 rounded">Читать</a></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
     <?php else: ?>
-        <!-- Форма регистрации -->
         <section class="my-8">
             <h3 class="text-xl font-bold">Регистрация</h3>
             <form action="register.php" method="post" class="bg-white p-4 shadow-md rounded">
@@ -68,7 +98,6 @@ $books = $stmt->fetchAll();
             </form>
         </section>
 
-        <!-- Форма входа -->
         <section class="my-8">
             <h3 class="text-xl font-bold">Вход</h3>
             <form action="login.php" method="post" class="bg-white p-4 shadow-md rounded">
@@ -85,40 +114,6 @@ $books = $stmt->fetchAll();
         </section>
     <?php endif; ?>
 
-    <h1>Список книг</h1>
-    <table>
-        <thead>
-        <tr>
-            <th>Название</th>
-            <th>Автор</th>
-            <th>Год публикации</th>
-            <th>Жанр</th>
-            <th>Описание</th>
-            <th>Действие</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($books as $book): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($book['title']); ?></td>
-                <td><?php echo htmlspecialchars($book['author']); ?></td>
-                <td><?php echo htmlspecialchars($book['publication_year']); ?></td>
-                <td><?php
-                    if (!is_null($book['genre_id'])) {
-                        $genreStmt = $pdo->prepare("SELECT genre_name FROM Genres WHERE genre_id = ?");
-                        $genreStmt->execute([$book['genre_id']]);
-                        $genre = $genreStmt->fetch();
-                        echo htmlspecialchars($genre['genre_name']);
-                    } else {
-                        echo 'N/A';
-                    }
-                    ?></td>
-                <td><?php echo htmlspecialchars($book['description']); ?></td>
-                <td><a href="books.php?id=<?php echo $book['book_id']; ?>" class="bg-blue-600 text-white px-4 py-2 rounded">Читать</a></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
 </main>
 <footer class="bg-blue-600 p-4 text-white text-center">
     &copy; 2024 Онлайн Библиотека

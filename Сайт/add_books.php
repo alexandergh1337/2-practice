@@ -6,14 +6,19 @@ function addBookToDatabase($bookData) {
 
     // Проверка и добавление автора
     $author = $conn->real_escape_string($bookData['author']);
-    $sql = "SELECT author_id FROM Authors WHERE name = '$author'";
-    $result = $conn->query($sql);
+    $sql = "SELECT author_id FROM Authors WHERE name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $author);
+    $stmt->execute();
+    $result = $stmt->get_result();
     if ($result->num_rows > 0) {
         $author_id = $result->fetch_assoc()['author_id'];
     } else {
-        $sql = "INSERT INTO Authors (name) VALUES ('$author')";
-        if ($conn->query($sql) === TRUE) {
-            $author_id = $conn->insert_id;
+        $sql = "INSERT INTO Authors (name) VALUES (?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $author);
+        if ($stmt->execute()) {
+            $author_id = $stmt->insert_id;
         } else {
             echo "Ошибка при добавлении автора: " . $conn->error;
             return false;
@@ -22,14 +27,19 @@ function addBookToDatabase($bookData) {
 
     // Проверка и добавление жанра (по умолчанию 'Неизвестный жанр')
     $genre = $conn->real_escape_string($bookData['genre']);
-    $sql = "SELECT genre_id FROM Genres WHERE genre_name = '$genre'";
-    $result = $conn->query($sql);
+    $sql = "SELECT genre_id FROM Genres WHERE genre_name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $genre);
+    $stmt->execute();
+    $result = $stmt->get_result();
     if ($result->num_rows > 0) {
         $genre_id = $result->fetch_assoc()['genre_id'];
     } else {
-        $sql = "INSERT INTO Genres (genre_name) VALUES ('$genre')";
-        if ($conn->query($sql) === TRUE) {
-            $genre_id = $conn->insert_id;
+        $sql = "INSERT INTO Genres (genre_name) VALUES (?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $genre);
+        if ($stmt->execute()) {
+            $genre_id = $stmt->insert_id;
         } else {
             echo "Ошибка при добавлении жанра: " . $conn->error;
             return false;
@@ -38,24 +48,14 @@ function addBookToDatabase($bookData) {
 
     // Добавление книги
     $title = $conn->real_escape_string($bookData['title']);
-    $publication_year = $conn->real_escape_string($bookData['publication_year']);
     $description = $conn->real_escape_string($bookData['description']);
+    $publication_year = intval($bookData['publication_year']);
     $path = $conn->real_escape_string($bookData['path']);
 
-    $sql = "INSERT INTO Books (title, author_id, genre_id, publication_year, description, path) 
-            VALUES ('$title', '$author_id', '$genre_id', '$publication_year', '$description', '$path')";
-    if ($conn->query($sql) === TRUE) {
-        $book_id = $conn->insert_id;
-
-        // Добавление страниц книги
-        foreach ($bookData['pages'] as $page_number => $page_content) {
-            $page_content = $conn->real_escape_string(trim($page_content));
-            $sql = "INSERT INTO BookPages (book_id, page_number, content) VALUES ('$book_id', '$page_number', '$page_content')";
-            if ($conn->query($sql) !== TRUE) {
-                echo "Ошибка при добавлении страницы: " . $conn->error;
-                return false;
-            }
-        }
+    $sql = "INSERT INTO Books (title, author_id, genre_id, description, publication_year, path) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("siisss", $title, $author_id, $genre_id, $description, $publication_year, $path);
+    if ($stmt->execute()) {
         return true;
     } else {
         echo "Ошибка при добавлении книги: " . $conn->error;

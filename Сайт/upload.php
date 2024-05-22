@@ -8,18 +8,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['epub'])) {
     $fileTmpName = $_FILES['epub']['tmp_name'];
     $uploadDir = 'uploads/';
     $uploadPath = $uploadDir . $fileName;
+    $extractPath = $uploadDir . pathinfo($fileName, PATHINFO_FILENAME);
 
     if (move_uploaded_file($fileTmpName, $uploadPath)) {
-        $bookData = readEpub($uploadPath);
-        if ($bookData) {
-            $bookData['path'] = $uploadPath;
-            if (addBookToDatabase($bookData)) {
-                echo 'Книга успешно загружена и сохранена.';
+        $zip = new ZipArchive;
+        if ($zip->open($uploadPath) === TRUE) {
+            $zip->extractTo($extractPath);
+            $zip->close();
+
+            $bookData = readEpub($extractPath);
+            if ($bookData) {
+                $bookData['path'] = $extractPath;
+                if (addBookToDatabase($bookData)) {
+                    echo 'Книга успешно загружена и сохранена.';
+                } else {
+                    echo 'Ошибка при добавлении книги в базу данных.';
+                }
             } else {
-                echo 'Ошибка при добавлении книги в базу данных.';
+                echo 'Ошибка при чтении EPUB файла.';
             }
         } else {
-            echo 'Ошибка при чтении EPUB файла.';
+            echo 'Не удалось распаковать EPUB файл.';
         }
     } else {
         echo 'Ошибка при загрузке файла.';

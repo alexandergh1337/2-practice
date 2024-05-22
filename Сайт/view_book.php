@@ -3,8 +3,11 @@ include 'config.php';
 
 $book_id = $_GET['book_id'];
 
-$sql = "SELECT * FROM Books WHERE book_id = '$book_id'";
-$book_result = $conn->query($sql);
+$sql = "SELECT * FROM Books WHERE book_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $book_id);
+$stmt->execute();
+$book_result = $stmt->get_result();
 
 if ($book_result->num_rows > 0) {
     $book = $book_result->fetch_assoc();
@@ -13,8 +16,11 @@ if ($book_result->num_rows > 0) {
     exit;
 }
 
-$sql = "SELECT * FROM BookPages WHERE book_id = '$book_id' ORDER BY page_number ASC";
-$pages_result = $conn->query($sql);
+$sql = "SELECT * FROM BookPages WHERE book_id = ? ORDER BY page_number ASC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $book_id);
+$stmt->execute();
+$pages_result = $stmt->get_result();
 
 $pages = [];
 if ($pages_result->num_rows > 0) {
@@ -26,6 +32,8 @@ if ($pages_result->num_rows > 0) {
     exit;
 }
 
+$stmt->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -80,7 +88,3 @@ if ($pages_result->num_rows > 0) {
 </script>
 </body>
 </html>
-
-<?php
-$conn->close();
-?>
