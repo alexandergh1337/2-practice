@@ -1,73 +1,147 @@
 CREATE TABLE Users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    registration_date DATE NOT NULL
+                       user_id INT AUTO_INCREMENT PRIMARY KEY,
+                       username VARCHAR(50) NOT NULL UNIQUE,
+                       password VARCHAR(255) NOT NULL,
+                       email VARCHAR(100) NOT NULL UNIQUE,
+                       registration_date DATE NOT NULL
 );
 
 CREATE TABLE Authors (
-    author_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    biography TEXT
+                         author_id INT AUTO_INCREMENT PRIMARY KEY,
+                         name VARCHAR(255) NOT NULL
 );
 
+
 CREATE TABLE Genres (
-    genre_id INT AUTO_INCREMENT PRIMARY KEY,
-    genre_name VARCHAR(50) NOT NULL
+                        genre_id INT AUTO_INCREMENT PRIMARY KEY,
+                        genre_name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Books (
-    book_id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    publication_year YEAR,
-    genre_id INT,
-    author_id INT,
-    FOREIGN KEY (genre_id) REFERENCES Genres(genre_id),
-    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
+                       book_id INT AUTO_INCREMENT PRIMARY KEY,
+                       title VARCHAR(255) NOT NULL,
+                       author VARCHAR(255) NOT NULL,
+                       path VARCHAR(255) NOT NULL,
+                       author_id INT,
+                       genre_id INT,
+                       publication_year INT,
+                       description TEXT,
+                       FOREIGN KEY (author_id) REFERENCES Authors(author_id),
+                       FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
+);
+
+CREATE TABLE BookPages (
+                           page_id INT AUTO_INCREMENT PRIMARY KEY,
+                           book_id INT,
+                           page_number INT,
+                           content TEXT,
+                           FOREIGN KEY (book_id) REFERENCES Books(book_id)
 );
 
 CREATE TABLE Loans (
-    loan_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    book_id INT,
-    loan_date DATE NOT NULL,
-    return_date DATE,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (book_id) REFERENCES Books(book_id)
+                       loan_id INT AUTO_INCREMENT PRIMARY KEY,
+                       user_id INT,
+                       book_id INT,
+                       loan_date DATE NOT NULL,
+                       return_date DATE,
+                       FOREIGN KEY (user_id) REFERENCES Users(user_id),
+                       FOREIGN KEY (book_id) REFERENCES Books(book_id)
 );
 
-INSERT INTO Users (username, password, email, registration_date) VALUES
-('ivan_ivanov', 'пароль123', 'ivan@example.com', '2024-01-01'),
-('anna_petrovna', 'пароль456', 'anna@example.com', '2024-02-01'),
-('petr_sidorov', 'пароль789', 'petr@example.com', '2024-03-01'),
-('olga_kuznetsova', 'пароль101', 'olga@example.com', '2024-04-01'),
-('sergey_smirnov', 'пароль102', 'sergey@example.com', '2024-05-01');
 
-INSERT INTO Authors (name, biography) VALUES
-('Александр Пушкин', 'Русский поэт, драматург и прозаик.'),
-('Лев Толстой', 'Русский писатель, один из величайших писателей мира.'),
-('Фёдор Достоевский', 'Русский писатель, мыслитель, философ и публицист.'),
-('Антон Чехов', 'Русский писатель, драматург и врач.'),
-('Николай Гоголь', 'Русский прозаик, драматург, поэт, критик.');
 
-INSERT INTO Genres (genre_name) VALUES
-('Научная фантастика'),
-('Фэнтези'),
-('Детектив'),
-('Историческая проза'),
-('Роман');
+INSERT INTO Users (username, password, email, registration_date)
+VALUES 
+('user1', 'password1', 'user1@example.com', '2024-01-01'),
+('user2', 'password2', 'user2@example.com', '2024-01-02'),
+('user3', 'password3', 'user3@example.com', '2024-01-03'),
+('user4', 'password4', 'user4@example.com', '2024-01-04'),
+('user5', 'password5', 'user5@example.com', '2024-01-05');
 
-INSERT INTO Books (title, publication_year, genre_id, author_id) VALUES
-('Евгений Онегин', 1833, 1, 1),
-('Война и мир', 1869, 4, 2),
-('Преступление и наказание', 1866, 3, 3),
-('Вишнёвый сад', 1904, 5, 4),
-('Мёртвые души', 1842, 2, 5);
+INSERT INTO Authors (name)
+VALUES 
+('Author One'),
+('Author Two'),
+('Author Three'),
+('Author Four'),
+('Author Five');
 
-INSERT INTO Loans (user_id, book_id, loan_date, return_date) VALUES
-(1, 1, '2024-05-01', '2024-05-15'),
-(2, 2, '2024-05-02', '2024-05-16'),
-(3, 3, '2024-05-03', '2024-05-17'),
-(4, 4, '2024-05-04', '2024-05-18'),
-(5, 5, '2024-05-05', '2024-05-19');
+INSERT INTO Genres (genre_name)
+VALUES 
+('Fiction'),
+('Non-Fiction'),
+('Science Fiction'),
+('Fantasy'),
+('Mystery');
+
+INSERT INTO Books (title, author, path, author_id, genre_id, publication_year, description)
+VALUES 
+('Book One', 'Author One', 'path/to/book1.epub', 1, 1, 2020, 'Description of Book One'),
+('Book Two', 'Author Two', 'path/to/book2.epub', 2, 2, 2021, 'Description of Book Two'),
+('Book Three', 'Author Three', 'path/to/book3.epub', 3, 3, 2022, 'Description of Book Three'),
+('Book Four', 'Author Four', 'path/to/book4.epub', 4, 4, 2023, 'Description of Book Four'),
+('Book Five', 'Author Five', 'path/to/book5.epub', 5, 5, 2024, 'Description of Book Five');
+
+INSERT INTO BookPages (book_id, page_number, content)
+VALUES 
+(1, 1, 'Content of page 1 of Book One'),
+(1, 2, 'Content of page 2 of Book One'),
+(2, 1, 'Content of page 1 of Book Two'),
+(2, 2, 'Content of page 2 of Book Two'),
+(3, 1, 'Content of page 1 of Book Three');
+
+INSERT INTO Loans (user_id, book_id, loan_date, return_date)
+VALUES 
+(1, 1, '2024-01-10', NULL),
+(2, 2, '2024-01-11', '2024-01-20'),
+(3, 3, '2024-01-12', '2024-01-21'),
+(4, 4, '2024-01-13', NULL),
+(5, 5, '2024-01-14', NULL);
+
+
+
+SELECT * FROM Users;
+SELECT * FROM Authors;
+SELECT * FROM Books;
+
+
+INSERT INTO Users (username, password, email, registration_date)
+VALUES ('new_user', 'new_password', 'new_user@example.com', CURDATE());
+
+UPDATE Books
+SET title = 'Updated Book Title', description = 'Updated Description'
+WHERE book_id = 1;
+
+DELETE FROM Loans
+WHERE return_date < '2024-01-12';
+
+
+
+SELECT Books.title, Loans.loan_date, Loans.return_date
+FROM Loans
+JOIN Books ON Loans.book_id = Books.book_id
+WHERE Loans.user_id = 1;
+
+SELECT Genres.genre_name, COUNT(Books.book_id) AS book_count
+FROM Books
+JOIN Genres ON Books.genre_id = Genres.genre_id
+GROUP BY Genres.genre_name;
+
+
+SELECT Users.username, Books.title, Loans.loan_date
+FROM Loans
+JOIN Users ON Loans.user_id = Users.user_id
+JOIN Books ON Loans.book_id = Books.book_id
+WHERE Loans.return_date IS NULL AND Loans.loan_date < DATE_SUB(CURDATE(), INTERVAL 30 DAY);
+
+
+SELECT Books.title, Loans.loan_date, Loans.return_date
+FROM Loans
+JOIN Books ON Loans.book_id = Books.book_id
+WHERE Loans.loan_date >= '2024-01-01' AND Loans.return_date <= '2024-02-01';
+
+
+SELECT BookPages.page_number, BookPages.content
+FROM BookPages
+WHERE BookPages.book_id = 1
+ORDER BY BookPages.page_number;
