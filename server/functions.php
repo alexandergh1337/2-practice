@@ -11,7 +11,7 @@ function findPages($dir) {
             $pages[] = $file->getPathname();
         }
     }
-    sort($pages); // Сортируем страницы по имени файла
+    sort($pages);
     return $pages;
 }
 ?>

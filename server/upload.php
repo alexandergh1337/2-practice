@@ -1,14 +1,15 @@
 <?php
-include 'config.php';
-include 'read_epub.php';
-include 'add_books.php';
+session_start();
+include '../server/config.php';
+include '../server/read_epub.php';
+include '../server/add_books.php';
 
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['epub'])) {
     $fileName = $_FILES['epub']['name'];
     $fileTmpName = $_FILES['epub']['tmp_name'];
-    $uploadDir = '/assets/uploads/';
+    $uploadDir = '../assets/uploads/';
     $uploadPath = $uploadDir . $fileName;
     $extractPath = $uploadDir . pathinfo($fileName, PATHINFO_FILENAME);
 
@@ -24,6 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['epub'])) {
 
             $bookData = readEpub($extractPath);
             if ($bookData) {
+                $coverImagePath = $extractPath . '/cover.jpg';
+                $coverImageRelPath = $uploadDir . pathinfo($fileName, PATHINFO_FILENAME) . '_cover.jpg';
+                if (file_exists($coverImagePath)) {
+                    if (copy($coverImagePath, $coverImageRelPath)) {
+                        $bookData['cover_image'] = '../assets/uploads/' . pathinfo($fileName, PATHINFO_FILENAME) . '_cover.jpg';
+                    } else {
+                        $bookData['cover_image'] = '../assets/default_cover.jpg';
+                    }
+                } else {
+                    $bookData['cover_image'] = '../assets/default_cover.jpg';
+                }
+
                 $bookData['path'] = $extractPath;
                 if (addBookToDatabase($bookData)) {
                     $message = 'Книга успешно загружена и сохранена.';
@@ -53,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['epub'])) {
 <div class="max-w-lg w-full mx-auto bg-white shadow-md rounded-lg p-6">
     <h1 class="text-2xl font-bold mb-6">Загрузка EPUB файла</h1>
     <?php if ($message): ?>
-        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4">
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
             <strong class="font-bold"><?= $message ?></strong>
         </div>
     <?php endif; ?>

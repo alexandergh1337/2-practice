@@ -25,6 +25,7 @@ CREATE TABLE Books (
                        title VARCHAR(255) NOT NULL,
                        author VARCHAR(255) NOT NULL,
                        path VARCHAR(255) NOT NULL,
+                       cover_image VARCHAR(255),
                        author_id INT,
                        genre_id INT,
                        publication_year INT,
@@ -33,20 +34,3 @@ CREATE TABLE Books (
                        FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
 );
 
-CREATE TABLE BookPages (
-                           page_id INT AUTO_INCREMENT PRIMARY KEY,
-                           book_id INT,
-                           page_number INT,
-                           content TEXT,
-                           FOREIGN KEY (book_id) REFERENCES Books(book_id)
-);
-
-CREATE TABLE Loans (
-                       loan_id INT AUTO_INCREMENT PRIMARY KEY,
-                       user_id INT,
-                       book_id INT,
-                       loan_date DATE NOT NULL,
-                       return_date DATE,
-                       FOREIGN KEY (user_id) REFERENCES Users(user_id),
-                       FOREIGN KEY (book_id) REFERENCES Books(book_id)
-);

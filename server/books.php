@@ -16,7 +16,7 @@ if ($bookId > 0) {
 
         try {
             $pages = findPages($bookPath);
-            natsort($pages); // Сортировка страниц в естественном порядке
+            natsort($pages);
             $pages = array_values($pages);
             $totalPages = count($pages);
 
@@ -27,7 +27,6 @@ if ($bookId > 0) {
             $pageContent = file_get_contents($pages[$currentPage - 1]);
             $pageContent = strip_tags($pageContent, '<img><p><a><b><i><strong><em>');
 
-            // Замена относительных путей на абсолютные для изображений и стилей
             $pageContent = preg_replace('/src="([^"]+)"/', 'src="' . $bookPath . '/$1"', $pageContent);
             $pageContent = preg_replace('/href="([^"]+)"/', 'href="' . $bookPath . '/$1"', $pageContent);
 

@@ -3,7 +3,7 @@ include 'config.php';
 include 'read_epub.php';
 include 'add_books.php';
 
-$dir = '/assets/uploads/'; // Директория с ePub файлами
+$dir = '/assets/uploads/';
 $files = glob($dir . '*.epub');
 
 foreach ($files as $file_path) {
