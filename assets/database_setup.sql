@@ -34,3 +34,10 @@ CREATE TABLE Books (
                        FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
 );
 
+CREATE TABLE UserBooks (
+                           userbook_id INT AUTO_INCREMENT PRIMARY KEY,
+                           user_id INT,
+                           book_id INT,
+                           status ENUM('planned', 'read', 'reading') NOT NULL,
+                           UNIQUE KEY unique_user_book (user_id, book_id)
+);
