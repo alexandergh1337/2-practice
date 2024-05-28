@@ -52,9 +52,24 @@ if ($bookId > 0) {
     <style>
         .navigation {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
         }
         .navigation a {
             margin: 0 10px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .navigation a:hover {
+            background-color: #45a049;
+        }
+        .navigation a.disabled {
+            pointer-events: none;
+            background-color: #cccccc;
         }
     </style>
 </head>
@@ -65,9 +80,13 @@ if ($bookId > 0) {
 <div class="navigation">
     <?php if ($currentPage > 1): ?>
         <a href="books.php?id=<?php echo $book['book_id']; ?>&page=<?php echo $currentPage - 1; ?>">Назад</a>
+    <?php else: ?>
+        <a class="disabled">Назад</a>
     <?php endif; ?>
     <?php if ($currentPage < $totalPages): ?>
         <a href="books.php?id=<?php echo $book['book_id']; ?>&page=<?php echo $currentPage + 1; ?>">Вперёд</a>
+    <?php else: ?>
+        <a class="disabled">Вперёд</a>
     <?php endif; ?>
 </div>
 </body>

@@ -1,38 +1,116 @@
 <?php
 session_start();
-include 'config.php';
+require_once 'config.php';
 
-function getGenres($conn) {
-    $sql = "SELECT genre_id, genre_name FROM Genres";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $genres = $result->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
-    return $genres;
+$genreId = isset($_GET['genre']) ? $_GET['genre'] : '';
+$books = getBooks($genreId);
+$plannedBooks = getUserBooksByStatus($_SESSION['user_id'], 'planned');
+$readBooks = getUserBooksByStatus($_SESSION['user_id'], 'read');
+$readingBooks = getUserBooksByStatus($_SESSION['user_id'], 'reading');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $book_id = $_POST['book_id'];
+    $action = $_POST['action'];
+
+    if ($action === 'planned' || $action === 'read' || $action === 'reading') {
+        addUserBook($_SESSION['user_id'], $book_id, $action);
+    } elseif ($action === 'remove') {
+        removeUserBook($_SESSION['user_id'], $book_id);
+    }
+
+    header('Location: index.php');
+    exit();
 }
 
-function getBooksByGenre($conn, $genreId) {
-    $sql = "SELECT Books.book_id, Books.title, Books.publication_year, Authors.name AS author, Genres.genre_name, Books.description, Books.cover_image
+function getBooks($genreId = '', $limit = 10, $offset = 0) {
+    global $conn;
+    $sql = "SELECT Books.*, Genres.genre_name, Authors.name AS author
             FROM Books
-            JOIN Authors ON Books.author_id = Authors.author_id
-            JOIN Genres ON Books.genre_id = Genres.genre_id
-            WHERE Books.genre_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('i', $genreId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $books = $result->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
+            LEFT JOIN Genres ON Books.genre_id = Genres.genre_id
+            LEFT JOIN Authors ON Books.author_id = Authors.author_id";
+    if ($genreId) {
+        $sql .= " WHERE Books.genre_id = $genreId";
+    }
+    $sql .= " LIMIT $limit OFFSET $offset";
+    $result = $conn->query($sql);
+    $books = array();
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $books[] = $row;
+        }
+    }
     return $books;
 }
 
-$genres = getGenres($conn);
 
-$genreId = isset($_GET['genre']) ? (int)$_GET['genre'] : null;
-$books = $genreId ? getBooksByGenre($conn, $genreId) : getBooksByGenre($conn, 1);
+function getUserBooksByStatus($user_id, $status) {
+    global $conn;
+    $sql = "SELECT Books.*, Authors.name AS author, Genres.genre_name 
+            FROM UserBooks
+            JOIN Books ON UserBooks.book_id = Books.book_id
+            JOIN Authors ON Books.author_id = Authors.author_id
+            JOIN Genres ON Books.genre_id = Genres.genre_id
+            WHERE UserBooks.user_id = $user_id AND UserBooks.status = '$status'";
+    $result = $conn->query($sql);
+    $books = array();
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $books[] = $row;
+        }
+    }
+    return $books;
+}
 
-$conn->close();
+
+function addUserBook($user_id, $book_id, $status) {
+    global $conn;
+    $sql = "INSERT INTO UserBooks (user_id, book_id, status) VALUES ($user_id, $book_id, '$status')
+            ON DUPLICATE KEY UPDATE status = '$status'";
+    $conn->query($sql);
+}
+
+function removeUserBook($user_id, $book_id) {
+    global $conn;
+    $sql = "DELETE FROM UserBooks WHERE user_id = $user_id AND book_id = $book_id";
+    $conn->query($sql);
+}
+
+function countTotalBooks($genreId = '') {
+    global $conn;
+    $sql = "SELECT COUNT(*) FROM Books";
+    if ($genreId) {
+        $sql .= " WHERE genre_id = $genreId";
+    }
+    $result = $conn->query($sql);
+    $row = $result->fetch_row();
+    return $row[0];
+}
+
+function getGenres() {
+    global $conn;
+    $sql = "SELECT * FROM Genres";
+    $result = $conn->query($sql);
+    $genres = array();
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $genres[] = $row;
+        }
+    }
+    return $genres;
+}
+
+
+$genres = getGenres();
+
+// Пагинация
+$limit = 10;
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
+$books = getBooks($genreId, $limit, $offset);
+$totalBooks = countTotalBooks($genreId);
+$totalPages = ceil($totalBooks / $limit);
+
 ?>
 
 <!DOCTYPE html>
@@ -74,6 +152,10 @@ $conn->close();
         .nav-links {
             margin-left: auto;
         }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
     </style>
     <link rel="stylesheet" href="/assets/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -101,6 +183,7 @@ $conn->close();
             <h1 class="text-xl font-bold mb-4 mt-8">Фильтр по жанрам</h1>
             <form action="index.php" method="get">
                 <select name="genre" onchange="this.form.submit()" class="block text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
+                    <option value="">Все жанры</option>
                     <?php foreach ($genres as $genre): ?>
                         <option value="<?= $genre['genre_id']; ?>" <?= ($genreId == $genre['genre_id']) ? 'selected' : ''; ?>><?= htmlspecialchars($genre['genre_name']); ?></option>
                     <?php endforeach; ?>
@@ -130,7 +213,131 @@ $conn->close();
                     <td><?= htmlspecialchars($book['publication_year']); ?></td>
                     <td><?= htmlspecialchars($book['genre_name']); ?></td>
                     <td class="py-2 px-4"><?= htmlspecialchars(str_replace('\n', ' ', $book['description'])); ?></td>
-                    <td class="py-2 px-4"><a href="books.php?id=<?= $book['book_id']; ?>" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Читать</a></td>
+                    <td class="py-2 px-4">
+                        <div class="action-buttons">
+                            <form action="index.php" method="post">
+                                <input type="hidden" name="book_id" value="<?= $book['book_id']; ?>">
+                                <button type="submit" name="action" value="planned" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Планируется</button>
+                            </form>
+                            <form action="index.php" method="post">
+                                <input type="hidden" name="book_id" value="<?= $book['book_id']; ?>">
+                                <button type="submit" name="action" value="read" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Прочитано</button>
+                            </form>
+                            <form action="index.php" method="post">
+                                <input type="hidden" name="book_id" value="<?= $book['book_id']; ?>">
+                                <button type="submit" name="action" value="reading" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">Читаю</button>
+                            </form>
+                            <form action="books.php" method="get">
+                                <input type="hidden" name="id" value="<?= $book['book_id']; ?>">
+                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Читать</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <h1 class="text-xl font-bold mb-4 mt-8">Запланировано</h1>
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-200">
+            <tr>
+                <th>Обложка</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Год публикации</th>
+                <th>Жанр</th>
+                <th>Описание</th>
+                <th>Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($plannedBooks as $book): ?>
+                <tr class="border-b">
+                    <td><img src="<?= htmlspecialchars($book['cover_image']); ?>" alt="Обложка книги" class="cover-image"></td>
+                    <td><?= htmlspecialchars($book['title']); ?></td>
+                    <td><?= htmlspecialchars($book['author']); ?></td>
+                    <td><?= htmlspecialchars($book['publication_year']); ?></td>
+                    <td><?= htmlspecialchars($book['genre_name']); ?></td>
+                    <td class="py-2 px-4"><?= htmlspecialchars(str_replace('\n', ' ', $book['description'])); ?></td>
+                    <td class="py-2 px-4">
+                        <div class="action-buttons">
+                            <form action="index.php" method="post">
+                                <input type="hidden" name="book_id" value="<?= $book['book_id']; ?>">
+                                <button type="submit" name="action" value="remove" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <h1 class="text-xl font-bold mb-4 mt-8">Прочитано</h1>
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-200">
+            <tr>
+                <th>Обложка</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Год публикации</th>
+                <th>Жанр</th>
+                <th>Описание</th>
+                <th>Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($readBooks as $book): ?>
+                <tr class="border-b">
+                    <td><img src="<?= htmlspecialchars($book['cover_image']); ?>" alt="Обложка книги" class="cover-image"></td>
+                    <td><?= htmlspecialchars($book['title']); ?></td>
+                    <td><?= htmlspecialchars($book['author']); ?></td>
+                    <td><?= htmlspecialchars($book['publication_year']); ?></td>
+                    <td><?= htmlspecialchars($book['genre_name']); ?></td>
+                    <td class="py-2 px-4"><?= htmlspecialchars(str_replace('\n', ' ', $book['description'])); ?></td>
+                    <td class="py-2 px-4">
+                        <div class="action-buttons">
+                            <form action="index.php" method="post">
+                                <input type="hidden" name="book_id" value="<?= $book['book_id']; ?>">
+                                <button type="submit" name="action" value="remove" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <h1 class="text-xl font-bold mb-4 mt-8">Читаю</h1>
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-200">
+            <tr>
+                <th>Обложка</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Год публикации</th>
+                <th>Жанр</th>
+                <th>Описание</th>
+                <th>Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($readingBooks as $book): ?>
+                <tr class="border-b">
+                    <td><img src="<?= htmlspecialchars($book['cover_image']); ?>" alt="Обложка книги" class="cover-image"></td>
+                    <td><?= htmlspecialchars($book['title']); ?></td>
+                    <td><?= htmlspecialchars($book['author']); ?></td>
+                    <td><?= htmlspecialchars($book['publication_year']); ?></td>
+                    <td><?= htmlspecialchars($book['genre_name']); ?></td>
+                    <td class="py-2 px-4"><?= htmlspecialchars(str_replace('\n', ' ', $book['description'])); ?></td>
+                    <td class="py-2 px-4">
+                        <div class="action-buttons">
+                            <form action="index.php" method="post">
+                                <input type="hidden" name="book_id" value="<?= $book['book_id']; ?>">
+                                <button type="submit" name="action" value="remove" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -180,7 +387,19 @@ $conn->close();
         </div>
     <?php endif; ?>
 </main>
-<footer class="bg-gray-200 p-4 text-center">
+
+<nav class="mt-8">
+    <ul class="flex justify-center">
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="mx-1">
+                <a href="?page=<?= $i; ?>&genre=<?= $genreId; ?>" class="px-3 py-1 border <?= ($i == $page) ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'; ?>"><?= $i; ?></a>
+            </li>
+        <?php endfor; ?>
+    </ul>
+</nav>
+
+
+<footer class="mt-4 bg-gray-200 p-4 text-center">
     <p>Онлайн Библиотека &copy; <?= date('Y'); ?></p>
 </footer>
 
