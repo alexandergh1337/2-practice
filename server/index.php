@@ -4,9 +4,19 @@ require_once 'config.php';
 
 $genreId = isset($_GET['genre']) ? $_GET['genre'] : '';
 $books = getBooks($genreId);
-$plannedBooks = getUserBooksByStatus($_SESSION['user_id'], 'planned');
-$readBooks = getUserBooksByStatus($_SESSION['user_id'], 'read');
-$readingBooks = getUserBooksByStatus($_SESSION['user_id'], 'reading');
+$plannedBooks = [];
+$readBooks = [];
+$readingBooks = [];
+
+if (isset($_SESSION['user_id'])) {
+    $plannedBooks = getUserBooksByStatus($_SESSION['user_id'], 'planned');
+    $readBooks = getUserBooksByStatus($_SESSION['user_id'], 'read');
+    $readingBooks = getUserBooksByStatus($_SESSION['user_id'], 'reading');
+} else {
+    $loginUrl = 'login.php';
+    $registrationUrl = 'register.php';
+    $errorMessage = 'Для доступа к библиотеке вам необходимо войти в свой аккаунт или зарегистрироваться.';
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $book_id = $_POST['book_id'];
@@ -388,15 +398,18 @@ $totalPages = ceil($totalBooks / $limit);
     <?php endif; ?>
 </main>
 
-<nav class="mt-8">
-    <ul class="flex justify-center">
-        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <li class="mx-1">
-                <a href="?page=<?= $i; ?>&genre=<?= $genreId; ?>" class="px-3 py-1 border <?= ($i == $page) ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'; ?>"><?= $i; ?></a>
-            </li>
-        <?php endfor; ?>
-    </ul>
-</nav>
+<?php if (isset($_SESSION['username'])): ?>
+    <nav class="mt-8">
+        <ul class="flex justify-center">
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="mx-1">
+                    <a href="?page=<?= $i; ?>&genre=<?= $genreId; ?>" class="px-3 py-1 border <?= ($i == $page) ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'; ?>"><?= $i; ?></a>
+                </li>
+            <?php endfor; ?>
+        </ul>
+    </nav>
+<?php endif; ?>
+
 
 
 <footer class="mt-4 bg-gray-200 p-4 text-center">
