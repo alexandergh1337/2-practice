@@ -1,0 +1,45 @@
+<mxfile host="app.diagrams.net" modified="2024-05-29T16:05:59.087Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="fOynSnpvSX6cxZbhYXAz" version="24.4.0" type="device">
+  <diagram name="Страница — 1" id="dJ2RGDc316PWSBuT6vaZ">
+    <mxGraphModel dx="1434" dy="772" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dlJ6QBAWJ_lvMbcuCEq7-36" value="&lt;pre&gt;&lt;code data-sourcepos=&quot;3:1-51:42&quot; class=&quot;code-container no-decoration-radius&quot; data-test-id=&quot;code-content&quot; role=&quot;text&quot;&gt;Менеджер&lt;/code&gt;&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="120" y="210" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dlJ6QBAWJ_lvMbcuCEq7-38" value="&lt;pre&gt;&lt;code data-sourcepos=&quot;3:1-51:42&quot; class=&quot;code-container no-decoration-radius&quot; data-test-id=&quot;code-content&quot; role=&quot;text&quot;&gt;Администратор БД&lt;/code&gt;&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="360" y="210" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bYKH4fSCcnGj0ZHAbn0e-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="dlJ6QBAWJ_lvMbcuCEq7-39" target="dlJ6QBAWJ_lvMbcuCEq7-38" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dlJ6QBAWJ_lvMbcuCEq7-39" value="&lt;pre&gt;&lt;code data-sourcepos=&quot;3:1-51:42&quot; class=&quot;code-container no-decoration-radius&quot; data-test-id=&quot;code-content&quot; role=&quot;text&quot;&gt;Генеральный директор&lt;/code&gt;&lt;/pre&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="360" y="90" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dlJ6QBAWJ_lvMbcuCEq7-45" value="Администратор сайта" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="590" y="210" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="xEUnG943xB0cY-q-XREW-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="dlJ6QBAWJ_lvMbcuCEq7-39" target="dlJ6QBAWJ_lvMbcuCEq7-45">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="160" as="sourcePoint" />
+            <mxPoint x="470" y="240" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="460" y="170" />
+              <mxPoint x="690" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="xEUnG943xB0cY-q-XREW-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="dlJ6QBAWJ_lvMbcuCEq7-39" target="dlJ6QBAWJ_lvMbcuCEq7-36">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="170" as="sourcePoint" />
+            <mxPoint x="480" y="250" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="460" y="170" />
+              <mxPoint x="220" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
