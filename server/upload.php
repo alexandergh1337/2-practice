@@ -78,6 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['epub'])) {
             <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Загрузить</button>
         </div>
     </form>
+    <div class="mt-4">
+        <a href="index.php" class="text-blue-500 hover:text-blue-700">Вернуться на главную</a>
+    </div>
 </div>
 </body>
 </html>
